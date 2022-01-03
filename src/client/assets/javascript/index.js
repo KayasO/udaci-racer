@@ -16,12 +16,12 @@ document.addEventListener('DOMContentLoaded', function () {
 async function onPageLoad() {
   try {
     getTracks().then((tracks) => {
-      console.log('tracks: ', tracks)
       const html = renderTrackCards(tracks)
       renderAt('#tracks', html)
     })
 
     getRacers().then((racers) => {
+      console.log('racers: ', racers)
       const html = renderRacerCars(racers)
       renderAt('#racers', html)
     })
@@ -181,7 +181,7 @@ function renderRacerCars(racers) {
 
   return `
 		<ul id="racers">
-			${reuslts}
+			${results}
 		</ul>
 	`
 }

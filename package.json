@@ -1,7 +1,7 @@
 {
-  "name": "pod_racer_sim",
+  "name": "one_racer_sim",
   "version": "1.0.0",
-  "description": "Racing simulator for Pod Racers",
+  "description": "Racing simulator for One Racers",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
