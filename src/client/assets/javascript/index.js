@@ -107,19 +107,23 @@ function runRace(raceID) {
   return new Promise((resolve) => {
     // TODO - use Javascript's built in setInterval method to get race info every 500ms
     const getRaceInfo = setInterval(() => {
-      getRace(raceID).then((data) => {
-        console.log('raceInfo: ', data)
+      getRace(raceID)
+        .then((data) => {
+          console.log('raceInfo: ', data)
 
-        if (data.status === 'in-progress') {
-          //TODO - if the race info status property is "in-progress", update the leaderboard by calling:
-          renderAt('#leaderBoard', raceProgress(data.positions))
-        } else if (data.status === 'finished') {
-          // TODO - if the race info status property is "finished", run the following:
-          clearInterval(raceInterval) // to stop the interval from repeating
-          renderAt('#race', resultsView(res.positions)) // to render the results view
-          reslove(res) // resolve the promise
-        }
-      })
+          if (data.status === 'in-progress') {
+            //TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+            renderAt('#leaderBoard', raceProgress(data.positions))
+          } else if (data.status === 'finished') {
+            // TODO - if the race info status property is "finished", run the following:
+            clearInterval(getRaceInfo) // to stop the interval from repeating
+            renderAt('#race', resultsView(data.positions)) // to render the results view
+            reslove(data) // resolve the promise
+          }
+        })
+        .catch((e) =>
+          console.log('Could not retrieve information about the race: ', e)
+        )
     }, 500)
   })
   // remember to add error handling for the Promise
@@ -185,7 +189,7 @@ function handleSelectTrack(target) {
 function handleAccelerate() {
   console.log('accelerate button clicked')
   // TODO - Invoke the API call to accelerate
-  accelerate(store.player_id)
+  accelerate(store.race_id)
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -385,4 +389,8 @@ function accelerate(id) {
   // POST request to `${SERVER}/api/races/${id}/accelerate`
   // options parameter provided as defaultFetchOpts
   // no body or datatype needed for this request
+  return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+    method: 'POST',
+    ...defaultFetchOpts(),
+  }).catch((err) => console.log('Problem with accelerating request::', err))
 }
