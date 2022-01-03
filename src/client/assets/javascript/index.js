@@ -320,11 +320,15 @@ function defaultFetchOpts() {
 function getTracks() {
   // GET request to `${SERVER}/api/tracks`
   return fetch(`${SERVER}/api/tracks`)
+    .then((response) => response.json())
+    .catch((e) => console.log('Could not get tracks from the server: ', e))
 }
 
 function getRacers() {
   // GET request to `${SERVER}/api/cars`
   return fetch(`${SERVER}/api/cars`)
+    .then((response) => response.json())
+    .catch((e) => console.log('Could not get racers from the server: ', e))
 }
 
 function createRace(player_id, track_id) {
@@ -345,6 +349,8 @@ function createRace(player_id, track_id) {
 function getRace(id) {
   // GET request to `${SERVER}/api/races/${id}`
   return fetch(`${SERVER}/api/races/${id}`)
+    .then((response) => response.json())
+    .catch((e) => console.log('Could not get race from the server: ', e))
 }
 
 function startRace(id) {
