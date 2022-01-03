@@ -77,7 +77,6 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-  console.log('handleCreateRace called')
   // render starting UI
   renderAt('#race', renderRaceStartView())
 
@@ -103,14 +102,11 @@ async function handleCreateRace() {
 }
 
 function runRace(raceID) {
-  console.log('runRace called')
   return new Promise((resolve) => {
     // TODO - use Javascript's built in setInterval method to get race info every 500ms
     const getRaceInfo = setInterval(() => {
       getRace(raceID)
         .then((data) => {
-          console.log('raceInfo: ', data)
-
           if (data.status === 'in-progress') {
             //TODO - if the race info status property is "in-progress", update the leaderboard by calling:
             renderAt('#leaderBoard', raceProgress(data.positions))
@@ -122,11 +118,11 @@ function runRace(raceID) {
           }
         })
         .catch((e) =>
+          // remember to add error handling for the Promise
           console.log('Could not retrieve information about the race: ', e)
         )
     }, 500)
   })
-  // remember to add error handling for the Promise
 }
 
 async function runCountdown() {
