@@ -93,33 +93,34 @@ async function handleCreateRace() {
 
   // The race has been created, now start the countdown
   // TODO - call the async function runCountdown
-  // await runCountdown()
+  await runCountdown()
 
   // TODO - call the async function
-  startRace(store.race_id).then((data) => {
-    console.log('startRace return: ', data)
-  })
+  await startRace(store.race_id)
 
   // TODO - call the async function runRace
-  // runRace(race.id)
+  runRace(store.race_id)
 }
 
 function runRace(raceID) {
   console.log('runRace called')
   return new Promise((resolve) => {
     // TODO - use Javascript's built in setInterval method to get race info every 500ms
-    /* 
-		TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+    const getRaceInfo = setInterval(() => {
+      getRace(raceID).then((data) => {
+        console.log('raceInfo: ', data)
 
-		renderAt('#leaderBoard', raceProgress(res.positions))
-	*/
-    /* 
-		TODO - if the race info status property is "finished", run the following:
-
-		clearInterval(raceInterval) // to stop the interval from repeating
-		renderAt('#race', resultsView(res.positions)) // to render the results view
-		reslove(res) // resolve the promise
-	*/
+        if (data.status === 'in-progress') {
+          //TODO - if the race info status property is "in-progress", update the leaderboard by calling:
+          renderAt('#leaderBoard', raceProgress(data.positions))
+        } else if (data.status === 'finished') {
+          // TODO - if the race info status property is "finished", run the following:
+          clearInterval(raceInterval) // to stop the interval from repeating
+          renderAt('#race', resultsView(res.positions)) // to render the results view
+          reslove(res) // resolve the promise
+        }
+      })
+    }, 500)
   })
   // remember to add error handling for the Promise
 }
@@ -287,7 +288,7 @@ function resultsView(positions) {
 }
 
 function raceProgress(positions) {
-  let userPlayer = positions.find((e) => e.id === store.player_id)
+  let userPlayer = positions.find((e) => e.id == store.player_id)
   userPlayer.driver_name += ' (you)'
 
   positions = positions.sort((a, b) => (a.segment > b.segment ? -1 : 1))
@@ -307,7 +308,7 @@ function raceProgress(positions) {
 		<main>
 			<h3>Leaderboard</h3>
 			<section id="leaderBoard">
-				${results}
+				${results.join('')}
 			</section>
 		</main>
 	`
@@ -374,13 +375,10 @@ function getRace(id) {
 }
 
 function startRace(id) {
-  console.log('POST /startRace')
   return fetch(`${SERVER}/api/races/${id}/start`, {
     method: 'POST',
     ...defaultFetchOpts(),
-  })
-    .then((response) => response.json())
-    .catch((err) => console.log('Problem with startRace request::', err))
+  }).catch((err) => console.log('Problem with startRace request::', err))
 }
 
 function accelerate(id) {
